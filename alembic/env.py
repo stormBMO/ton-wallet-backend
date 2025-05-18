@@ -13,14 +13,21 @@ os.environ["ALEMBIC_CONTEXT"] = "1"
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 dotenv_path = os.path.join(project_root, '.env')
-load_dotenv(dotenv_path=dotenv_path)
+load_dotenv(dotenv_path=dotenv_path, override=True)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 # Явно получаем DATABASE_URL из окружения ПОСЛЕ load_dotenv()
+# loaded_database_url = "postgresql://admin:admin2025!@localhost:5432/ton_wallet_db" # <-- Возвращаем как было
 loaded_database_url = os.getenv("DATABASE_URL")
+
+# --- ОТЛАДОЧНАЯ ПЕЧАТЬ --- 
+# Печатаем то, что ФАКТИЧЕСКИ загружено в loaded_database_url из окружения
+print(f"DEBUG: alembic/env.py: os.getenv('DATABASE_URL') after load_dotenv() is: '{loaded_database_url}'")
+# --- КОНЕЦ ОТЛАДОЧНОЙ ПЕЧАТИ ---
+
 if not loaded_database_url:
     # Эта ошибка будет более информативной, если .env не загрузился или пуст
     raise ValueError(

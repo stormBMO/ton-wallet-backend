@@ -1,7 +1,11 @@
-import uuid
+from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, String, Float, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
-from core.database import Base
+import uuid
+
+class Base(AsyncAttrs, DeclarativeBase):
+    pass
 
 class TokenRisk(Base):
     __tablename__ = "token_risks"
@@ -14,7 +18,4 @@ class TokenRisk(Base):
     sentiment_score = Column(Float)
     contract_risk_score = Column(Float)
     overall_risk_score = Column(Float)
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
-
-    def __repr__(self):
-        return f"<TokenRisk(symbol='{self.symbol}', overall_risk_score='{self.overall_risk_score}')>" 
+    updated_at = Column(DateTime(timezone=True), default=func.now(), onupdate=func.now(), nullable=False)
